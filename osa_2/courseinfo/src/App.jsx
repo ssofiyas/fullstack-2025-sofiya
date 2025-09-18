@@ -1,5 +1,6 @@
 import Course from './components/Course'
 
+
 const App = () => {
   const courses = [
     {
@@ -54,6 +55,7 @@ const App = () => {
       )}
     </div>
   )
+  
 }
 
 export default App
