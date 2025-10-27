@@ -1,5 +1,5 @@
 {
-  "name": "puhelinluettelon_backend",
+  "name": "puh_lue_9_11",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
@@ -8,14 +8,13 @@
     "dev": "nodemon index.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
     "cors": "^2.8.5",
-    "morgan": "^1.10.0",
-    "dotenv": "^16.3.1",
-    "mongoose": "^8.3.0"
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "mongoose": "^8.19.2",
+    "morgan": "^1.10.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.1.10"
   }
 }
-
