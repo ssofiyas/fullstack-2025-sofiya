@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
+"scripts": {
+  "start": "node index.js",
+  "build-frontend": "cd frontend && npm install && npm run build",
+  "start-all": "npm run build-frontend && node index.js"
+},
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
