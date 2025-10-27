@@ -8,9 +8,6 @@
   },
   "scripts": {
     "start": "node index.js",
-    "build-frontend": "cd frontend && npm ci && npm run build",
-    "build": "npm run build-frontend",
-    "start-all": "npm run build-frontend && node index.js",
     "dev": "nodemon index.js"
   },
   "dependencies": {
