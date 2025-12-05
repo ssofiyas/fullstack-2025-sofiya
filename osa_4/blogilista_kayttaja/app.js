@@ -1,35 +1,38 @@
 import express from 'express'
+import cors from 'cors'
 import mongoose from 'mongoose'
-import config from './utils/config.js'
-import logger from './utils/logger.js'
-import middleware from './utils/middleware.js'
 import blogsRouter from './controllers/blogs.js'
 import usersRouter from './controllers/users.js'
+import loginRouter from './controllers/login.js'
+import { requestLogger, tokenExtractor, unknownEndpoint, errorHandler } from './utils/middleware.js'
+import config from './utils/config.js'
+
+mongoose.set('strictQuery', false)
+
+mongoose
+  .connect(config.MONGODB_URI)
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.error('error connecting to MongoDB:', error.message)
+  })
 
 const app = express()
 
-logger.info('connecting to', config.MONGODB_URI)
+app.use(cors())
+app.use(express.json())
+app.use(requestLogger)
+app.use(tokenExtractor) 
 
-mongoose.connect(config.MONGODB_URI, { family: 4 })
-  .then(() => {
-    logger.info('connected to MongoDB')
-  })
-  .catch((error) => {
-    logger.error('error connection to MongoDB:', error.message)
-  })
-
-app.use(express.static('dist'))
-app.use(express.json())                
-app.use(middleware.requestLogger)
-
+app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
+
 app.use('/api/blogs', blogsRouter)
 
-app.get('/api/notes', (request, response) => {
-  response.json([])
-})
-
-app.use(middleware.unknownEndpoint)
-app.use(middleware.errorHandler)
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 export default app
+
+

@@ -1,5 +1,7 @@
+import User from '../models/user.js'
 import Blog from '../models/blog.js'
-import Note from '../models/note.js'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 const initialBlogs = [
   {
@@ -16,25 +18,9 @@ const initialBlogs = [
   },
 ]
 
-const initialNotes = [
-  {
-    content: 'HTML is easy',
-    important: false,
-  },
-  {
-    content: 'Browser can execute only JavaScript',
-    important: true,
-  },
-]
-
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
-}
-
-const notesInDb = async () => {
-  const notes = await Note.find({})
-  return notes.map(note => note.toJSON())
 }
 
 const nonExistingBlogId = async () => {
@@ -49,19 +35,22 @@ const nonExistingBlogId = async () => {
   return blog._id.toString()
 }
 
-const nonExistingNoteId = async () => {
-  const note = new Note({ content: 'willremovethissoon', important: false })
-  await note.save()
-  await Note.findByIdAndDelete(note._id)
-  return note._id.toString()
+const getTokenForUser = async () => {
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ username: 'root', name: 'Super User', passwordHash })
+  await user.save()
+
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
+
+  return jwt.sign(userForToken, process.env.SECRET || 'secretkey')
 }
 
 export default {
   initialBlogs,
-  initialNotes,
   blogsInDb,
-  notesInDb,
   nonExistingBlogId,
-  nonExistingNoteId,
-  nonExistingId: nonExistingBlogId
+  getTokenForUser,
 }

@@ -11,18 +11,22 @@ const userSchema = new mongoose.Schema({
   passwordHash: {
     type: String,
     required: true
-  }
+  },
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog'
+    }
+  ]
 })
 
-// Muunna toJSON siten että id näkyy ja passwordHash ym. poistuvat
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
-    delete returnedObject.passwordHash // älä paljasta hashia
+    delete returnedObject.passwordHash
   }
 })
 
-const User = mongoose.model('User', userSchema)
-export default User
+export default mongoose.model('User', userSchema)
