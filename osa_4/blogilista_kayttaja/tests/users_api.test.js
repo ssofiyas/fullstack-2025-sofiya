@@ -3,14 +3,15 @@ import assert from 'node:assert'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app.js'
-import helper from './test_helper.js' // oletan että test_helper eksporttaa initial data
+import helper from './test_helper.js' 
 import User from '../models/user.js'
 
 const api = supertest(app)
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
-    // tyhjennetään ja asetetaan alkutila
+    
+
     await User.deleteMany({})
     const user = new User({
       username: 'root',
