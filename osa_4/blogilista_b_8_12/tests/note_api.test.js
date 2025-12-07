@@ -1,6 +1,6 @@
-// ...existing code...
-import { test } from 'node:test'
+import { test, after } from 'node:test'
 import assert from 'node:assert'
+import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app.js'
 
@@ -11,4 +11,7 @@ test('notes are returned as json', async () => {
   assert.strictEqual(response.status, 200)
   assert.strictEqual(response.type, 'application/json')
 })
-// ...existing code...
+
+after(async () => {
+  await mongoose.connection.close()
+})
