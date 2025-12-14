@@ -1,33 +1,45 @@
 import { useState, useEffect } from 'react'
 import loginService from './services/login'
-import noteService from './services/notes'
+import blogService from './services/blogs'
 
 const Notification = ({ message }) => {
   if (message === null) return null
-  return <div style={{ color: 'red' }}>{message}</div>
+
+  const style = {
+    color: message.includes('wrong') || message.includes('Error') ? 'red' : 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  return <div style={style}>{message}</div>
 }
 
 const App = () => {
-  const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('')
-  const [showAll, setShowAll] = useState(true)
+  const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
-    noteService.getAll().then(initialNotes => {
-      setNotes(initialNotes)
+    blogService.getAll().then(blogs => {
+      setBlogs(blogs)
     })
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      noteService.setToken(user.token)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -36,106 +48,128 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
+        'loggedBlogappUser', JSON.stringify(user)
       )
-      noteService.setToken(user.token)
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
     } catch {
-      setErrorMessage('wrong username/password')
-      setTimeout(() => setErrorMessage(null), 3000)
+      setErrorMessage('wrong username or password')
+      setTimeout(() => setErrorMessage(null), 5000)
     }
   }
 
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value)
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+    blogService.setToken(null)
   }
 
-  const addNote = async (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
     try {
-      const noteObject = { content: newNote, important: false }
-      const returnedNote = await noteService.create(noteObject)
-      setNotes(notes.concat(returnedNote))
-      setNewNote('')
+      const blogObject = {
+        title: title,
+        author: author,
+        url: url
+      }
+
+      const returnedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(returnedBlog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setErrorMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+      setTimeout(() => setErrorMessage(null), 5000)
     } catch {
-      setErrorMessage('Error creating note')
-      setTimeout(() => setErrorMessage(null), 3000)
+      setErrorMessage('error adding blog')
+      setTimeout(() => setErrorMessage(null), 5000)
     }
   }
 
-  const toggleImportanceOf = async (id) => {
-    const note = notes.find(n => n.id === id)
-    const changedNote = { ...note, important: !note.important }
-    try {
-      const updatedNote = await noteService.update(id, changedNote)
-      setNotes(notes.map(n => n.id !== id ? n : updatedNote))
-    } catch {
-      setErrorMessage('Error updating note')
-      setTimeout(() => setErrorMessage(null), 3000)
-    }
+  if (user === null) {
+    return (
+      <div>
+        <h2>Log in to application</h2>
+        <Notification message={errorMessage} />
+        <form onSubmit={handleLogin}>
+          <div>
+            username
+            <input
+              type="text"
+              value={username}
+              name="Username"
+              onChange={({ target }) => setUsername(target.value)}
+            />
+          </div>
+          <div>
+            password
+            <input
+              type="password"
+              value={password}
+              name="Password"
+              onChange={({ target }) => setPassword(target.value)}
+            />
+          </div>
+          <button type="submit">login</button>
+        </form>
+      </div>
+    )
   }
-//lisays
-  noteService.getAll().then(initialNotes => setNotes(initialNotes))
-// tasta tule virhe
-//  const notesToShow = showAll ? notes : notes.filter(note => note.important)
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>
-          username
-          <input
-            type="text"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          password
-          <input
-            type="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </label>
-      </div>
-      <button type="submit">login</button>
-    </form>
-  )
-
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input value={newNote} onChange={handleNoteChange} />
-      <button type="submit">save</button>
-    </form>
-  )
 
   return (
     <div>
-      <h1>Notes</h1>
+      <h2>blogs</h2>
       <Notification message={errorMessage} />
+      <p>
+        {user.name} logged in
+        <button onClick={handleLogout}>logout</button>
+      </p>
 
-      {!user && loginForm()}
-
-      {user && (
+      <h2>create new</h2>
+      <form onSubmit={addBlog}>
         <div>
-          <p>{user.name} logged in</p>
-          {noteForm()}
+          title:
+          <input
+            type="text"
+            value={title}
+            name="Title"
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          author:
+          <input
+            type="text"
+            value={author}
+            name="Author"
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          url:
+          <input
+            type="text"
+            value={url}
+            name="Url"
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+
+      {blogs.map(blog =>
+        <div key={blog.id} style={{
+          padding: '10px',
+          marginBottom: '10px',
+          border: '1px solid #ccc',
+          borderRadius: '5px'
+        }}>
+          <div><strong>{blog.title}</strong> by {blog.author}</div>
+          <div><a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a></div>
         </div>
       )}
-
-      <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all'}
-        </button>
-      </div>
-
-
-
     </div>
   )
 }
