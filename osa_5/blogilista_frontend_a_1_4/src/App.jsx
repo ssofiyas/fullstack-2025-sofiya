@@ -8,8 +8,10 @@ import blogService from './services/blogs'
 const Notification = ({ message }) => {
   if (message === null) return null
 
+  const isError = message.includes('wrong') ||message.includes('Error') || message.includes('error')
+
   const style = {
-    color: message.includes('wrong') || message.includes('Error') ? 'red' : 'green',
+    color: isError ? 'red' : 'green',
     background: 'lightgrey',
     fontSize: 20,
     borderStyle: 'solid',
@@ -18,7 +20,7 @@ const Notification = ({ message }) => {
     marginBottom: 10
   }
 
-  return <div style={style}>{message}</div>
+  return <div className={isError ? 'error' : 'success'} style={style}>{message}</div>
 }
 
 const App = () => {
@@ -110,22 +112,26 @@ const App = () => {
         <Notification message={errorMessage} />
         <form onSubmit={handleLogin}>
           <div>
-            username
-            <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
+            <label>
+              username
+              <input
+                type="text"
+                value={username}
+                name="Username"
+                onChange={({ target }) => setUsername(target.value)}
+              />
+            </label>
           </div>
           <div>
-            password
-            <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
+            <label>
+              password
+              <input
+                type="password"
+                value={password}
+                name="Password"
+                onChange={({ target }) => setPassword(target.value)}
+              />
+            </label>
           </div>
           <button type="submit">login</button>
         </form>

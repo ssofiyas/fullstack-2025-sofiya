@@ -33,7 +33,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentUser }) => {
   const showDeleteButton = blog.user && currentUser && blog.user.username === currentUser.username
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='note'>
       <div>
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
@@ -47,7 +47,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentUser }) => {
           </div>
           <div>{blog.user && blog.user.name}</div>
           {showDeleteButton && (
-            <button onClick={handleDelete} style={{ backgroundColor: '#4CAF50', color: 'white' }}>
+            <button onClick={handleDelete}>
               remove
             </button>
           )}
