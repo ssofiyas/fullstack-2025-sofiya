@@ -1,0 +1,38 @@
+{
+  "anecdotes": [
+    {
+      "content": "React Query simplifies the communication with backend",
+      "important": false,
+      "id": "1",
+      "votes": 3
+    },
+    {
+      "content": "useReducer is an alternative way for data management",
+      "important": false,
+      "id": "2",
+      "votes": null
+    },
+    {
+      "id": "ec57",
+      "content": "Here is my anecdote",
+      "important": false
+    },
+    {
+      "id": "1e5d",
+      "content": "Here is my anecdote",
+      "important": false,
+      "votes": null
+    },
+    {
+      "id": "75b3",
+      "content": "Olipa kerran...",
+      "important": true,
+      "votes": 1
+    },
+    {
+      "id": "09cb",
+      "content": "Tassa tule hauska anekdotti",
+      "votes": 6
+    }
+  ]
+}
