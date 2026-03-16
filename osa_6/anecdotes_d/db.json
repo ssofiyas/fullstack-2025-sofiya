@@ -4,13 +4,13 @@
       "content": "React Query simplifies the communication with backend",
       "important": false,
       "id": "1",
-      "votes": 3
+      "votes": 8
     },
     {
       "content": "useReducer is an alternative way for data management",
       "important": false,
       "id": "2",
-      "votes": null
+      "votes": 3
     },
     {
       "id": "ec57",
@@ -27,12 +27,18 @@
       "id": "75b3",
       "content": "Olipa kerran...",
       "important": true,
-      "votes": 1
+      "votes": 3
     },
     {
       "id": "09cb",
       "content": "Tassa tule hauska anekdotti",
-      "votes": 6
+      "votes": 8
+    },
+    {
+      "id": "cc57",
+      "content": "Oli olemassa yksi koira ja han paattii....",
+      "votes": 4
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
